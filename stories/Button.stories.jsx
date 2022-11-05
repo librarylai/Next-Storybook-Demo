@@ -1,40 +1,32 @@
-import React from 'react';
+import React from 'react'
+import { Button } from './Button'
 
-import { Button } from './Button';
-
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/Button',
+  title: 'Component/Button', // 路由的部分代表『分類』，因此這邊代表在 Storybook 上會顯示 Component 這個類別，裡面有一個 Button 元件
   component: Button,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
-};
+}
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Button {...args} />;
+const Template = (args) => <Button {...args} />
 
-export const Primary = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-Primary.args = {
-  primary: true,
-  label: 'Button',
-};
-
-export const Secondary = Template.bind({});
-Secondary.args = {
-  label: 'Button',
-};
-
-export const Large = Template.bind({});
-Large.args = {
-  size: 'large',
-  label: 'Button',
-};
-
-export const Small = Template.bind({});
+// 建立一個 Small 樣式的 Button 在 Storybook 上
+export const Small = Template.bind({})
 Small.args = {
-  size: 'small',
-  label: 'Button',
-};
+  styles: {
+    width: '100px',
+    height: '24px',
+    backgroundColor: 'lightblue',
+    color: 'white',
+  },
+  label: 'SmallButton',
+}
+// 建立一個 Middle 樣式的 Button 在 Storybook 上
+export const Middle = Template.bind({})
+Middle.args = {
+  styles: {
+    width: '150px',
+    height: '32px',
+    backgroundColor: 'lightblue',
+    color: 'white',
+  },
+  label: 'MiddleButton',
+}
