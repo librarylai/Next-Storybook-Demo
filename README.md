@@ -1,10 +1,14 @@
-# Storybook
+# 【筆記】Storybook 系列(一) - Storybook 安裝與基本教學
+
+###### tags: `筆記文章`
+
+![](https://i.imgur.com/63MNo1t.png)
 
 ## 安裝 Storybook
 
-1. **建立一個 Next 專案**
+1. **建立一個 Next 專案或是 Create-react-app 專案**
 
-   > yarn create next-app next-storybook
+   > yarn create next-app next-storybook (這邊以 Next.js 舉例)
 
 2. **使用 Storybook CLI 來快速將 Storybook 相關設定加入到『現有專案』中**
 
@@ -53,7 +57,7 @@
    >
    > ![](https://i.imgur.com/7u7YbJx.gif)
 
-## 實作基本元件
+## 初階 - 學習建立一個最基本的 Story 元件
 
 上面的部分我們已經將整個 Storybook 加入到專案中了，現在我們可以先將先前 CLI 『預設產生在 storites 資料夾下的檔案』都先『刪除』，因為我們要開始來攥寫 Storybook 的基本元件，這邊將會一步一步介紹整個流程。
 
@@ -65,7 +69,7 @@
 
 ### 2. 攥寫 Button.jsx 元件
 
-我們先寫個最基本的 Button 元件，可以看到元件主要會接收 `styles` 與 `label` 這兩個 props，讓我們等等可以自行設定樣式與文字。
+我們先寫個最基本的 Button 元件，可以看到元件主要會接收 `styles` 與 `label` 這兩個 props，讓我們等等可以自行『設定樣式』與『按鈕文字』。
 
 ```jsx=
 export const Button = ({ styles, label, ...props }) => {
@@ -137,7 +141,183 @@ Middle.args = {
 
 #### 先來看一下目前為止的成果：
 
+沒意外應該可以看到我們剛剛所寫的 `Small` 與 `Middle` 這兩個 Story Button 才對，如果有正確看到就代表目前『初階』的練習已經算是完成了呦！！ :+1:
+
 ![](https://i.imgur.com/KtA8ssz.gif)
+
+## 初階二 - 做一個類似 MUI 或 Antd 的 Button
+
+到目前為止，我們已經學習到了最基本攥寫 Story 的方法了，接下來我們要回來改寫一下前面的 Button 元件，因為我們總不能都一直透過 `styles` 來調整元件樣式吧，這樣不僅每次都得寫一大堆 CSS 程式碼也不好閱讀，而且沒有規範。
+
+一般在開發上，設計師會規範整個網站的 UIKit，例如 Button 有哪些顏色主題、哪些尺寸...等，因此我們應該朝這種方向來設計我們的元件，像是透過`color`、`size`...等屬性來設定『按鈕顏色』、『按鈕尺寸』。
+
+> **補充：**
+> 這邊會使用到 styled-components 來攥寫 Button 元件，因此要麻煩讀者們安裝一下，如果還不會 styled-components 的讀者可參考 [styled-components 官方](https://styled-components.com/docs/basics#getting-started)
+>
+> `yarn add styled-components`
+
+### 調整 Button.jsx 元件 - 使用 Styled-components
+
+現在我們重新調整 Button 元件，首先我們需要讓使用者能夠傳入 `color` 與 `size` 這兩個 props，因此我們先將 Button 元件調整成 :point_down:
+
+```jsx=
+// 增加 size 與 color 這兩個 props
+export const Button = ({ size, color, styles, label, ...props }) => {
+  return (
+    // ButtonStyled 為 styled-component
+    <ButtonStyled color={color} size={size} style={styles} {...props}>
+      {label}
+    </ButtonStyled>
+  )
+}
+```
+
+接著，我們將這些 Props 傳給 Styled-components 並且依照我們所制定的規範來產生對應的 Button 尺寸與顏色。(PS. 這邊只有簡單寫幾個，詳細可自行依造專案情況設定。)
+
+> **尺寸(Size)規範：**
+> small: { width: '100px' , height:'24px'}
+> middle: { width: '150px' , height:'32px'}
+>
+> **顏色(Color)規範：**
+> primary: lightblue
+> secondary: lightgreen
+
+```jsx=
+
+// 依照 Size 取得 Button 尺寸
+const getButtonSize = (size) => {
+  switch (size) {
+    default:
+    case 'small':
+      return {
+        width: '100px',
+        height: '24px',
+      }
+    case 'middle':
+      return {
+        width: '150px',
+        height: '32px',
+      }
+  }
+}
+// 依照 Color 取得 Button 主題顏色
+const getButtonColor = (color) => {
+  switch (color) {
+    default:
+    case 'primary':
+      return {
+        backgroundColor: 'lightblue',
+        color: 'white',
+      }
+    case 'secondary':
+      return {
+        backgroundColor: 'lightgreen',
+        color: 'white',
+      }
+  }
+}
+// styled-component 部分
+const ButtonStyled = styled.button`
+  border: none;
+  ${({ size }) => getButtonSize(size)}
+  ${({ color }) => getButtonColor(color)}
+`
+```
+
+### 調整 Button.stories.jsx - 使用 color 與 size 屬性
+
+現在我們需要將 Button 的 Story 改成使用 `color` 與 `size` 這兩個屬性來傳入，因此程式碼會變成這樣 :point_down:
+
+#### Ps.兩者比較起來，是不是變的好閱讀了許多呀！!
+
+```jsx=
+// Button.stories.jsx
+/*...省略...*/
+// 建立一個 Small 樣式的 Button 在 Storybook 上
+export const Small = Template.bind({})
+Small.args = {
+  size: 'small', // 調整這邊...
+  color: 'primary',// 調整這邊...
+  label: 'SmallButton',
+}
+// 建立一個 Middle 樣式的 Button 在 Storybook 上
+export const Middle = Template.bind({})
+Middle.args = {
+  size: 'middle',// 調整這邊...
+  color: 'secondary',// 調整這邊...
+  label: 'MiddleButton',
+}
+
+----------------------
+/* Before */
+export const Middle = Template.bind({})
+Middle.args = {
+  styles: {
+    width: '150px',
+    height: '32px',
+    backgroundColor: 'lightblue',
+    color: 'white',
+  },
+  label: 'MiddleButton',
+}
+```
+
+#### 最後來看一下這次更動後的成果吧：
+
+![](https://i.imgur.com/2XEHB0z.gif)
+
+## 初階三 - 從面板(Controls)自行調整各種樣式
+
+上面的部分我們增加了 `color` 與 `size` 這兩個屬性，可以注意看一下上面圖片中有個 **Controls** 的部分可以讓我們自行輸入去操作元件，就像是我們透過 Console 中的 Element 去改變 DOM 的樣式一樣。
+
+仔細觀查一下可以發現，目前 **Controls** 中的 `color` 與 `size` 這兩個屬性都需要輸入一些『特定的字串』，例如：`small`、`middle`、`primary`...等才能正常渲染出對應的樣式。
+
+但我們總不可能讓 PM 或 設計師每次都自己手動輸入這些特定文字，而且也容易造成打錯字等問題，因此這邊會使用到 **argTypes** 這個參數來設定。
+
+### 調整 Button.stories.jsx - 使用 argTypes 控制參數
+
+在開始使用 **ArgTypes** 之前，首先我們要先好好了解一下這個特殊的參數。
+
+> ArgTypes are a first-class feature in Storybook for specifying the behaviour of Args. By specifying the type of an arg, you constrain the values that it can take and provide information about args that are not explicitly set
+
+簡單來說就是，我們可以『**透過 ArgTypes 來對 Args 裡面的參數做一些設定**』，像是補上描述(description)或是欄位在 Control 中的呈現方式(type)...等，詳細細節可參考 [ArgsTable - Storybook Doc](https://storybook.js.org/docs/react/writing-docs/doc-block-argstable)
+
+```jsx=
+export default {
+  title: 'Component/Button', // 路由的部分代表『分類』，因此這邊代表在 Storybook 上會顯示 Component 這個類別，裡面有一個 Button 元件
+  component: Button,
+  argTypes: {
+    size: {
+      options: ['small', 'middle'], // 我們所自定義的 Size 規範
+      control: { type: 'radio' }, // 使用 radio 方式呈現
+      description: '用來設定 Button 的尺寸',
+      table: {
+        defaultValue: {
+          summary: 'small',
+        },
+      },
+    },
+    color: {
+      options: ['primary', 'secondary'], // 我們所自定義的 Color 規範
+      control: { type: 'radio' }, // 使用 radio 方式呈現
+      description: '用來設定 Button 的主題顏色',
+      table: {
+        defaultValue: {
+          summary: 'primary',
+        },
+      },
+    },
+  },
+}
+```
+
+#### 讓我們來看看調整完的成果！！！
+
+在 **Description** 與 **Default** 方面，除了 **ArgTypes** 可以設定之外，也可以透過 Component 中的 **defaultProps** 與 **propTypes** 來做設定，因此如果原本在開發元件時就有習慣寫 defaultProps 與 propTypes 參數的話就『不用』在 ArgTypes 中再寫一次了。
+
+> 補充：如果兩者都有設定，顯示會以 ArgTypes 為主。
+
+![](https://i.imgur.com/Ik7rbHA.png)
 
 ## Reference
 
