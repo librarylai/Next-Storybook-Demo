@@ -32,11 +32,17 @@ const getButtonColor = (color) => {
         backgroundColor: 'lightgreen',
         color: 'white',
       }
+    case 'error':
+      return {
+        backgroundColor: 'red',
+        color: 'white',
+      }
   }
 }
 
 const ButtonStyled = styled.button`
   border: none;
+  cursor: pointer;
   ${({ size }) => getButtonSize(size)}
   ${({ color }) => getButtonColor(color)}
 `
