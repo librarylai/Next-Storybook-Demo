@@ -47,10 +47,10 @@ const ButtonStyled = styled.button`
   ${({ color }) => getButtonColor(color)}
 `
 
-export const Button = ({ size, color, styles, label, onClick, ...props }) => {
+export const Button = ({ children, size, color, styles, label, onClick, ...props }) => {
   return (
     <ButtonStyled color={color} size={size} style={styles} onClick={onClick} {...props}>
-      {label}
+      {children ? children : label}
     </ButtonStyled>
   )
 }

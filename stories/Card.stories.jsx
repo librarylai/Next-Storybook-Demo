@@ -17,9 +17,9 @@ SimplyCard.args = {
   variant: 'outlined',
   actionChild: (
     <>
-      {/* 這邊複寫掉原本 Small 的 color 屬性（原本為：藍色）*/}
+      {/* 這邊複寫掉原本 Button 的 default color 屬性（default：藍色）*/}
       <Small color={'error'}>取消</Small>
-      {/* 這邊使用了 Button 的 Small Story 的參數，這邊的 {...Small.args} 可以不用寫，因為 Small 預設就是用 Small.args */}
+      {/* 這邊使用了 Button 的 Small Story 的參數 */}
       <Small {...Small.args}>確定</Small>
     </>
   ),
