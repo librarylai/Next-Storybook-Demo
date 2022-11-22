@@ -8,7 +8,7 @@ export default {
 
 const Template = (args) => <Card {...args} />
 
-// 建立一個 Small 樣式的 Button 在 Storybook 上
+// 建立一個 Small 樣式的 Button 在 Storybook 上。
 export const SimplyCard = Template.bind({})
 SimplyCard.args = {
   title: 'Simply Card',
